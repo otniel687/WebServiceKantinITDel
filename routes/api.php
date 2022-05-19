@@ -25,3 +25,19 @@ Route::post('/data-produk/tambah', 'ProductController@storeAPI');
 Route::put('/data-produk/ubah/{id}', 'ProductController@updateAPI');
 
 Route::delete('/data-produk/hapus/{id}', 'ProductController@destroyAPI');
+
+Route::get('/data-pembelian', 'PembelianController@indexAPI')->name('data-pembelian');
+
+Route::post('/data-pembelian/tambah', 'PembelianController@storeAPI');
+
+Route::put('/data-pembelian/ubah/{id}', 'PembelianController@updateAPI');
+
+Route::delete('/data-pembelian/hapus/{id}', 'PembelianController@destroyAPI');
+
+Route::get('/data-pembayaran', 'PembayaranController@indexAPI')->name('data-pembayaran');
+
+Route::post('/data-pembayaran/tambah', 'PembayaranController@storeAPI');
+
+Route::put('/data-pembayaran/ubah/{id}', 'PembayaranController@updateAPI');
+
+Route::delete('/data-pembayaran/hapus/{id}', 'PembayaranController@destroyAPI');
