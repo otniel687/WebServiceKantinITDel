@@ -20,6 +20,14 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+
+    public function index()
+    {
+        $products = Product::paginate(10);
+        return view('produk.index', ['products'=>$products]);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -40,7 +48,7 @@ class ProductController extends Controller
     {
         $products = new Product;
         $products -> nama = $request->input('nama');
-        $products -> jenis = $request->input('jenis');
+        $products -> hargaPcs = $request->input('hargaPcs');
         $products -> kategori = $request->input('kategori');
         $products -> jumlah = $request->input('jumlah');
         $products -> status = $request->input('status');
@@ -48,6 +56,30 @@ class ProductController extends Controller
         $products -> deskripsi = $request->input('deskripsi');
         $products -> save();
         return response()->json($products);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'gambar' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
+        ]);
+
+        $foto = $request->file('gambar');
+        $NamaFoto = time().'.'.$foto->extension();
+        $foto->move(public_path('foto/product'), $NamaFoto);
+
+        Product::create([
+            'nama' => $request->nama,
+            'hargaPcs' => $request->hargaPcs,
+            'kategori' => $request->kategori,
+            'jumlah' => $request->jumlah,
+            'status' => $request->status,
+            'gambar' => $NamaFoto,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+
+        return redirect(route('product'))->with('success','Data Product berhasil dibuat !');
     }
 
     /**
@@ -83,7 +115,7 @@ class ProductController extends Controller
     {
         $products = Product::where(['id'=>$id])->first();
         $products -> nama = $request->input('nama');
-        $products -> jenis = $request->input('jenis');
+        $products -> hargaPcs = $request->input('hargaPcs');
         $products -> kategori = $request->input('kategori');
         $products -> jumlah = $request->input('jumlah');
         $products -> status = $request->input('status');
@@ -91,6 +123,19 @@ class ProductController extends Controller
         $products -> deskripsi = $request->input('deskripsi');
         $products -> save();
         return response()->json($products);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $products = Product::find($id);
+        $products -> nama = $request->nama;
+        $products -> hargaPcs = $request->hargaPcs;
+        $products -> kategori = $request->kategori;
+        $products -> jumlah = $request->jumlah;
+        $products -> status = $request->status;
+        $products -> deskripsi = $request->deskripsi;
+        $products -> save();
+        return redirect(route('product'))->with('success','Data Product berhasil diubah !');
     }
 
     /**
@@ -104,5 +149,12 @@ class ProductController extends Controller
         $products = Product::where(['id'=>$id])->first();
         $products->delete();
         return response()->json($products); 
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $products = Product::find($id);
+        $products->delete();
+        return redirect(route('product'))->with('success','Data Product berhasil dihapus !');
     }
 }
